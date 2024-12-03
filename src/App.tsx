@@ -7,32 +7,30 @@ const items = getNumbers(1, 42).map(n => `Item ${n}`);
 
 export const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
-  const totalItems = items.length;
-
-  const startIdx = (currentPage - 1) * perPage;
-  const endIdx = Math.min(startIdx + perPage, totalItems);
+  const startIdx = (currentPage - 1) * itemsPerPage;
+  const endIdx = Math.min(startIdx + itemsPerPage, items.length);
 
   const currentItems = items.slice(startIdx, endIdx);
 
+  const itemsPerPageOptions = [3, 5, 10, 20];
+
   const handlePageChange = (page: number) => setCurrentPage(page);
 
-  const handlePerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newPerPage = +e.target.value;
-
-    setPerPage(newPerPage);
+  const handleItemsPerPageChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    setItemsPerPage(+e.target.value);
     setCurrentPage(1);
   };
-
-  const perPageOptions = [3, 5, 10, 20];
 
   return (
     <div className="container">
       <h1>Items with Pagination</h1>
 
       <p className="lead" data-cy="info">
-        Page {currentPage} (items {startIdx + 1} - {endIdx} of {totalItems})
+        Page {currentPage} (items {startIdx + 1} - {endIdx} of {items.length})
       </p>
 
       <div className="form-group row">
@@ -41,10 +39,10 @@ export const App: React.FC = () => {
             data-cy="perPageSelector"
             id="perPageSelector"
             className="form-control"
-            value={perPage}
-            onChange={handlePerPageChange}
+            value={itemsPerPage}
+            onChange={handleItemsPerPageChange}
           >
-            {perPageOptions.map(option => (
+            {itemsPerPageOptions.map(option => (
               <option key={option} value={option}>
                 {option}
               </option>
@@ -57,8 +55,8 @@ export const App: React.FC = () => {
       </div>
 
       <Pagination
-        total={totalItems}
-        perPage={perPage}
+        total={items.length}
+        perPage={itemsPerPage}
         currentPage={currentPage}
         onPageChange={handlePageChange}
       />

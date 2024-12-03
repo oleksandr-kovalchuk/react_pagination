@@ -13,28 +13,36 @@ export const Pagination: React.FC<Props> = ({
   currentPage,
   onPageChange,
 }) => {
-  const pageCount = Math.ceil(total / perPage);
-  const pages = Array.from({ length: pageCount }, (_, index) => index + 1);
+  const totalPages = Math.ceil(total / perPage);
+
+  const generatePageNumbers = (count: number): number[] => {
+    const pageNumbers = [];
+
+    for (let i = 1; i <= count; i++) {
+      pageNumbers.push(i);
+    }
+
+    return pageNumbers;
+  };
+
+  const pageNumbers = generatePageNumbers(totalPages);
 
   const isPrevDisabled = currentPage === 1;
-  const isNextDisabled = currentPage === pageCount;
+  const isNextDisabled = currentPage === totalPages;
 
-  const prevPage = currentPage - 1;
-  const nextPage = currentPage + 1;
-
-  const handlePrevClick = () => {
+  const goToPreviousPage = () => {
     if (!isPrevDisabled) {
-      onPageChange(prevPage);
+      onPageChange(currentPage - 1);
     }
   };
 
-  const handleNextClick = () => {
+  const goToNextPage = () => {
     if (!isNextDisabled) {
-      onPageChange(nextPage);
+      onPageChange(currentPage + 1);
     }
   };
 
-  const handlePageClick = (page: number) => {
+  const goToPage = (page: number) => {
     onPageChange(page);
   };
 
@@ -42,7 +50,7 @@ export const Pagination: React.FC<Props> = ({
     <ul className="pagination">
       <li
         className={`page-item ${isPrevDisabled ? 'disabled' : ''}`}
-        onClick={handlePrevClick}
+        onClick={goToPreviousPage}
       >
         <a
           className="page-link"
@@ -54,11 +62,11 @@ export const Pagination: React.FC<Props> = ({
         </a>
       </li>
 
-      {pages.map(page => (
+      {pageNumbers.map(page => (
         <li
           key={page}
           className={`page-item ${page === currentPage ? 'active' : ''}`}
-          onClick={() => handlePageClick(page)}
+          onClick={() => goToPage(page)}
         >
           <a className="page-link" href={`#${page}`} data-cy="pageLink">
             {page}
@@ -68,7 +76,7 @@ export const Pagination: React.FC<Props> = ({
 
       <li
         className={`page-item ${isNextDisabled ? 'disabled' : ''}`}
-        onClick={handleNextClick}
+        onClick={goToNextPage}
       >
         <a
           className="page-link"
