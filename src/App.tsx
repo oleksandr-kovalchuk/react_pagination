@@ -3,25 +3,29 @@ import './App.css';
 import { getNumbers } from './utils';
 import { Pagination } from './components/Pagination';
 
-const items = getNumbers(1, 42).map(n => `Item ${n}`);
+const numbers = getNumbers(1, 42);
+const items = numbers.map(number => `Item ${number}`);
 
 export const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(5);
 
-  const startIdx = (currentPage - 1) * itemsPerPage;
-  const endIdx = Math.min(startIdx + itemsPerPage, items.length);
+  const firstItemIndex = (currentPage - 1) * itemsPerPage;
+  const lastItemIndex = Math.min(firstItemIndex + itemsPerPage, items.length);
+  const currentItems = items.slice(firstItemIndex, lastItemIndex);
 
-  const currentItems = items.slice(startIdx, endIdx);
+  const itemsPerPageOptions: number[] = [3, 5, 10, 20];
 
-  const itemsPerPageOptions = [3, 5, 10, 20];
-
-  const handlePageChange = (page: number) => setCurrentPage(page);
+  const handlePageChange = (page: number): void => {
+    setCurrentPage(page);
+  };
 
   const handleItemsPerPageChange = (
     e: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    setItemsPerPage(+e.target.value);
+  ): void => {
+    const selectedValue = parseInt(e.target.value, 10);
+
+    setItemsPerPage(selectedValue);
     setCurrentPage(1);
   };
 
@@ -30,7 +34,8 @@ export const App: React.FC = () => {
       <h1>Items with Pagination</h1>
 
       <p className="lead" data-cy="info">
-        Page {currentPage} (items {startIdx + 1} - {endIdx} of {items.length})
+        Page {currentPage} (items {firstItemIndex + 1} - {lastItemIndex} of{' '}
+        {items.length})
       </p>
 
       <div className="form-group row">
@@ -49,6 +54,7 @@ export const App: React.FC = () => {
             ))}
           </select>
         </div>
+
         <label htmlFor="perPageSelector" className="col-form-label col">
           Items per page
         </label>

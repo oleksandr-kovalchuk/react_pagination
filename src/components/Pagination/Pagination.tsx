@@ -15,34 +15,34 @@ export const Pagination: React.FC<Props> = ({
 }) => {
   const totalPages = Math.ceil(total / perPage);
 
-  const generatePageNumbers = (count: number): number[] => {
-    const pageNumbers = [];
+  const getPageNumbers = (totalPagesCount: number): number[] => {
+    const numbersArray: number[] = [];
 
-    for (let i = 1; i <= count; i++) {
-      pageNumbers.push(i);
+    for (let i = 1; i <= totalPagesCount; i++) {
+      numbersArray.push(i);
     }
 
-    return pageNumbers;
+    return numbersArray;
   };
 
-  const pageNumbers = generatePageNumbers(totalPages);
+  const pageNumbers = getPageNumbers(totalPages);
 
   const isPrevDisabled = currentPage === 1;
   const isNextDisabled = currentPage === totalPages;
 
-  const goToPreviousPage = () => {
+  const goToPreviousPage = (): void => {
     if (!isPrevDisabled) {
       onPageChange(currentPage - 1);
     }
   };
 
-  const goToNextPage = () => {
+  const goToNextPage = (): void => {
     if (!isNextDisabled) {
       onPageChange(currentPage + 1);
     }
   };
 
-  const goToPage = (page: number) => {
+  const goToPage = (page: number): void => {
     onPageChange(page);
   };
 
